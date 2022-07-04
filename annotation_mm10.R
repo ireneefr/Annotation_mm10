@@ -23,9 +23,12 @@ colnames(data) <- cols
 dim(data) #142446     12
 length(unique(data$proteinID)) #53246
 length(unique(sub("\\..*", "", data$name))) 
-head(data)
+head(data, 20)
 # Generate exon start and end columns for 1st exon
-vapply(strsplit(data$exonStarts,","), `[`, 1, FUN.VALUE=character(1))
+data[data$strand == "+", "start_1stExon"] <- vapply(strsplit(data[data$strand == "+", "exonStarts"],","), head, 1, FUN.VALUE=character(1))
+data[data$strand == "-", "start_1stExon"] <- vapply(strsplit(data[data$strand == "-", "exonStarts"],","), tail, 1, FUN.VALUE=character(1))
+data[data$strand == "+", "end_1stExon"] <- vapply(strsplit(data[data$strand == "+", "exonEnds"],","), head, 1, FUN.VALUE=character(1))
+data[data$strand == "-", "end_1stExon"] <- vapply(strsplit(data[data$strand == "-", "exonEnds"],","), tail, 1, FUN.VALUE=character(1))
 
 ### Obtain gene names
 
